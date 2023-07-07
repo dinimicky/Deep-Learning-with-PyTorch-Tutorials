@@ -114,7 +114,7 @@ def main():
     print('x:', x.shape, 'label:', label.shape)
 
     # device = torch.device('cuda')
-    device = torch.device('cpu')
+    device = torch.device('mps')
     # model = Lenet5().to(device)
     model = ResNet18().to(device)
 
