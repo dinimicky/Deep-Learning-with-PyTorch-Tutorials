@@ -110,10 +110,11 @@ def main():
     cifar_test = DataLoader(cifar_test, batch_size=batchsz, shuffle=True)
 
 
-    x, label = iter(cifar_train).next()
+    x, label = next(iter(cifar_train))
     print('x:', x.shape, 'label:', label.shape)
 
-    device = torch.device('cuda')
+    # device = torch.device('cuda')
+    device = torch.device('cpu')
     # model = Lenet5().to(device)
     model = ResNet18().to(device)
 
