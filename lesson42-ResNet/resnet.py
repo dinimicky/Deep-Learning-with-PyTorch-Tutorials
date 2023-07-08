@@ -1,12 +1,13 @@
-import  torch
-from    torch import  nn
-from    torch.nn import functional as F
-from    torch.utils.data import DataLoader
-from    torchvision import datasets
-from    torchvision import transforms
-from    torch import nn, optim
+import torch
+from torch import nn
+from torch.nn import functional as F
+from torch.utils.data import DataLoader
+from torchvision import datasets
+from torchvision import transforms
+from torch import nn, optim
 
 # from    torchvision.models import resnet18
+
 
 class ResBlk(nn.Module):
     """
@@ -30,9 +31,8 @@ class ResBlk(nn.Module):
             # [b, ch_in, h, w] => [b, ch_out, h, w]
             self.extra = nn.Sequential(
                 nn.Conv2d(ch_in, ch_out, kernel_size=1, stride=1),
-                nn.BatchNorm2d(ch_out)
+                nn.BatchNorm2d(ch_out),
             )
-
 
     def forward(self, x):
         """
@@ -49,16 +49,12 @@ class ResBlk(nn.Module):
         return out
 
 
-
-
 class ResNet18(nn.Module):
-
     def __init__(self):
         super(ResNet18, self).__init__()
 
         self.conv1 = nn.Sequential(
-            nn.Conv2d(3, 16, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm2d(16)
+            nn.Conv2d(3, 16, kernel_size=3, stride=1, padding=1), nn.BatchNorm2d(16)
         )
         # followed 4 blocks
         # [b, 64, h, w] => [b, 128, h ,w]
@@ -70,7 +66,7 @@ class ResNet18(nn.Module):
         # # [b, 512, h, w] => [b, 1024, h, w]
         # self.blk4 = ResBlk(256, 512)
 
-        self.outlayer = nn.Linear(32*32*32, 10)
+        self.outlayer = nn.Linear(32 * 32 * 32, 10)
 
     def forward(self, x):
         """
@@ -89,32 +85,37 @@ class ResNet18(nn.Module):
         x = x.view(x.size(0), -1)
         x = self.outlayer(x)
 
-
         return x
-
 
 
 def main():
     batchsz = 32
 
-    cifar_train = datasets.CIFAR10('cifar', True, transform=transforms.Compose([
-        transforms.Resize((32, 32)),
-        transforms.ToTensor()
-    ]), download=True)
+    cifar_train = datasets.CIFAR10(
+        "cifar",
+        True,
+        transform=transforms.Compose(
+            [transforms.Resize((32, 32)), transforms.ToTensor()]
+        ),
+        download=True,
+    )
     cifar_train = DataLoader(cifar_train, batch_size=batchsz, shuffle=True)
 
-    cifar_test = datasets.CIFAR10('cifar', False, transform=transforms.Compose([
-        transforms.Resize((32, 32)),
-        transforms.ToTensor()
-    ]), download=True)
+    cifar_test = datasets.CIFAR10(
+        "cifar",
+        False,
+        transform=transforms.Compose(
+            [transforms.Resize((32, 32)), transforms.ToTensor()]
+        ),
+        download=True,
+    )
     cifar_test = DataLoader(cifar_test, batch_size=batchsz, shuffle=True)
 
-
     x, label = next(iter(cifar_train))
-    print('x:', x.shape, 'label:', label.shape)
+    print("x:", x.shape, "label:", label.shape)
 
     # device = torch.device('cuda')
-    device = torch.device('mps')
+    device = torch.device("mps")
     # model = Lenet5().to(device)
     model = ResNet18().to(device)
 
@@ -123,7 +124,6 @@ def main():
     print(model)
 
     for epoch in range(1000):
-
         model.train()
         for batchidx, (x, label) in enumerate(cifar_train):
             # [b, 3, 32, 32]
@@ -141,10 +141,8 @@ def main():
             loss.backward()
             optimizer.step()
 
-
         #
-        print(epoch, 'loss:', loss.item())
-
+        print(epoch, "loss:", loss.item())
 
         model.eval()
         with torch.no_grad():
@@ -167,8 +165,8 @@ def main():
                 # print(correct)
 
             acc = total_correct / total_num
-            print(epoch, 'acc:', acc)
+            print(epoch, "acc:", acc)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
