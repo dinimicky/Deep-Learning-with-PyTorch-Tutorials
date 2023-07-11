@@ -1,4 +1,5 @@
 import torch
+import time
 from torch import nn
 from torch.nn import functional as F
 from torch.utils.data import DataLoader
@@ -115,7 +116,8 @@ def main():
     print("x:", x.shape, "label:", label.shape)
 
     # device = torch.device('cuda')
-    device = torch.device("mps")
+    # device = torch.device("mps")
+    device = torch.device("cpu")
     # model = Lenet5().to(device)
     model = ResNet18().to(device)
 
@@ -125,6 +127,7 @@ def main():
 
     for epoch in range(1000):
         model.train()
+        start = time.time()
         for batchidx, (x, label) in enumerate(cifar_train):
             # [b, 3, 32, 32]
             # [b]
@@ -142,9 +145,10 @@ def main():
             optimizer.step()
 
         #
-        print(epoch, "loss:", loss.item())
+        print(epoch, "loss:", loss.item(), "time cost:", time.time() - start)
 
         model.eval()
+        start = time.time()
         with torch.no_grad():
             # test
             total_correct = 0
@@ -165,7 +169,7 @@ def main():
                 # print(correct)
 
             acc = total_correct / total_num
-            print(epoch, "acc:", acc)
+            print(epoch, "acc:", acc, "time cost:", time.time() - start)
 
 
 if __name__ == "__main__":
