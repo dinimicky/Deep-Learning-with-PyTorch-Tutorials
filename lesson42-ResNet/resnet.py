@@ -148,7 +148,7 @@ class ResNet18(nn.Module):
 
 
 def main():
-    batchsz = 32
+    batchsz = 128
 
     cifar_train = datasets.CIFAR10(
         "cifar",
@@ -175,7 +175,7 @@ def main():
 
     # device = torch.device('cuda')
     device = torch.device("mps")
-    cpu = torch.device("cpu")
+    # device = torch.device("cpu")
     # model = Lenet5().to(device)
     model = ResNet18().to(device)
 
