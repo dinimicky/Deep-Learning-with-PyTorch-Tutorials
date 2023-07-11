@@ -9,6 +9,64 @@ from torch import nn, optim
 
 # from    torchvision.models import resnet18
 
+class Lenet5(nn.Module):
+    """
+    for cifar10 dataset.
+    """
+    def __init__(self):
+        super(Lenet5, self).__init__()
+
+        self.conv_unit = nn.Sequential(
+            # x: [b, 3, 32, 32] => [b, 16, ]
+            nn.Conv2d(3, 16, kernel_size=5, stride=1, padding=0),
+            nn.MaxPool2d(kernel_size=2, stride=2, padding=0),
+            #
+            nn.Conv2d(16, 32, kernel_size=5, stride=1, padding=0),
+            nn.MaxPool2d(kernel_size=2, stride=2, padding=0),
+            #
+        )
+        # flatten
+        # fc unit
+        self.fc_unit = nn.Sequential(
+            nn.Linear(32*5*5, 32),
+            nn.ReLU(),
+            # nn.Linear(120, 84),
+            # nn.ReLU(),
+            nn.Linear(32, 10)
+        )
+
+
+        # [b, 3, 32, 32]
+        tmp = torch.randn(2, 3, 32, 32)
+        out = self.conv_unit(tmp)
+        # [b, 16, 5, 5]
+        print('conv out:', out.shape)
+
+        # # use Cross Entropy Loss
+        # self.criteon = nn.CrossEntropyLoss()
+
+
+
+    def forward(self, x):
+        """
+
+        :param x: [b, 3, 32, 32]
+        :return:
+        """
+        batchsz = x.size(0)
+        # [b, 3, 32, 32] => [b, 16, 5, 5]
+        x = self.conv_unit(x)
+        # [b, 16, 5, 5] => [b, 16*5*5]
+        x = x.view(batchsz, 32*5*5)
+        # [b, 16*5*5] => [b, 10]
+        logits = self.fc_unit(x)
+
+        # # [b, 10]
+        # pred = F.softmax(logits, dim=1)
+        # loss = self.criteon(logits, y)
+
+        return logits
+
 
 class ResBlk(nn.Module):
     """
@@ -116,8 +174,8 @@ def main():
     print("x:", x.shape, "label:", label.shape)
 
     # device = torch.device('cuda')
-    # device = torch.device("mps")
-    device = torch.device("cpu")
+    device = torch.device("mps")
+    cpu = torch.device("cpu")
     # model = Lenet5().to(device)
     model = ResNet18().to(device)
 
@@ -161,9 +219,12 @@ def main():
                 # [b, 10]
                 logits = model(x)
                 # [b]
-                pred = logits.argmax(dim=1)
+                # pred = logits.argmax(dim=1)
+                pred = logits.max(dim=1).indices
                 # [b] vs [b] => scalar tensor
-                correct = torch.eq(pred, label).float().sum().item()
+                cmp = torch.eq(pred, label)
+                # print(logits, pred, label, sep="\n")
+                correct = cmp.float().sum().item()
                 total_correct += correct
                 total_num += x.size(0)
                 # print(correct)
