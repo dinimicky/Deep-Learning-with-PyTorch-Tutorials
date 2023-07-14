@@ -148,7 +148,7 @@ class ResNet18(nn.Module):
 
 
 def main():
-    batchsz = 128
+    batchsz = 200
 
     cifar_train = datasets.CIFAR10(
         "cifar",

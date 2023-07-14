@@ -71,7 +71,8 @@ class Net(nn.Module):
 
 
 def main():
-    device = torch.device('cuda')
+    # device = torch.device('cuda')
+    device = torch.device('mps')
     net = Net()
     net.to(device)
 

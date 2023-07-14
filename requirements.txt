@@ -1,0 +1,7 @@
+-i https://pypi.tuna.tsinghua.edu.cn/simple
+
+ipython 
+numpy 
+matplotlib 
+pillow 
+pandas 
