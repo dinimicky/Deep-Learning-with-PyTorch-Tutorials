@@ -76,7 +76,7 @@ class Lenet5(nn.Module):
 
 def main():
     net = Lenet5()
-
+    print(net)
     tmp = torch.randn(2, 3, 32, 32)
     out = net(tmp)
     print("lenet out:", out.shape)
