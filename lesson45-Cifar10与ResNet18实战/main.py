@@ -76,7 +76,8 @@ def main():
                 # [b, 10]
                 logits = model(x)
                 # [b]
-                pred = logits.max(dim=1).indices
+                # pred = logits.max(dim=1).indices
+                pred = logits.argmax(dim=1)
                 # [b] vs [b] => scalar tensor
                 correct = torch.eq(pred, label).float().sum().item()
                 total_correct += correct
