@@ -43,7 +43,7 @@ class ResBlk(nn.Module):
         # short cut.
         # extra module: [b, ch_in, h, w] => [b, ch_out, h, w]
         # element-wise add:
-        print('resblk out', out.shape)
+        # print('resblk out', out.shape)
         out = self.extra(x) + out
         out = F.relu(out)
         
@@ -83,19 +83,19 @@ class ResNet18(nn.Module):
 
         # [b, 64, h, w] => [b, 1024, h, w]
         x = self.blk1(x)
-        print('blk1', x.shape)
+        # print('blk1', x.shape)
         x = self.blk2(x)
-        print('blk2', x.shape)
+        # print('blk2', x.shape)
         x = self.blk3(x)
-        print('blk3', x.shape)
+        # print('blk3', x.shape)
         x = self.blk4(x)
-        print('blk4', x.shape)
+        # print('blk4', x.shape)
 
 
-        print('after conv:', x.shape) #[b, 512, 2, 2]
+        # print('after conv:', x.shape) #[b, 512, 2, 2]
         # [b, 512, h, w] => [b, 512, 1, 1]
         x = F.adaptive_avg_pool2d(x, [1, 1])
-        print('after pool:', x.shape)
+        # print('after pool:', x.shape)
         x = x.view(x.size(0), -1)
         x = self.outlayer(x)
 
