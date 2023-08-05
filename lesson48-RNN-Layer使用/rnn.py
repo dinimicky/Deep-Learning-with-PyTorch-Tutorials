@@ -10,18 +10,17 @@ from    torch.nn import functional as F
 
 def main():
 
-
     rnn = nn.RNN(input_size=100, hidden_size=20, num_layers=1)
     print(rnn)
     x = torch.randn(10, 3, 100)
     out, h = rnn(x, torch.zeros(1, 3, 20))
-    print(out.shape, h.shape)
+    print(f"RNN: layers=1 out.shape={out.shape}, h.shape={h.shape}", )
 
     rnn = nn.RNN(input_size=100, hidden_size=20, num_layers=4)
     print(rnn)
     x = torch.randn(10, 3, 100)
     out, h = rnn(x, torch.zeros(4, 3, 20))
-    print(out.shape, h.shape)
+    print(f"RNN: layers=4 out.shape={out.shape}, h.shape={h.shape}", )
     # print(vars(rnn))
 
     print('rnn by cell')
@@ -30,7 +29,7 @@ def main():
     h1 = torch.zeros(3, 20)
     for xt in x:
         h1 = cell1(xt, h1)
-    print(h1.shape)
+    print(f"rnn cell: h1.shape={h1.shape}")
 
 
     cell1 = nn.RNNCell(100, 30)
